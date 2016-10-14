@@ -698,10 +698,11 @@ public class InAppBrowser extends CordovaPlugin {
 
                 // Close/Done button
                 ImageButton close = new ImageButton(cordova.getActivity());
-                // <-- techfeed close/done button size 44px
+                // <-- techfeed close/done button size 44px, position left
                 // RelativeLayout.LayoutParams closeLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+                // closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 RelativeLayout.LayoutParams closeLayoutParams = new RelativeLayout.LayoutParams(this.dpToPixels(44), this.dpToPixels(44));
-                closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 // techfeed -->
                 close.setLayoutParams(closeLayoutParams);
                 forward.setContentDescription("Close Button");
