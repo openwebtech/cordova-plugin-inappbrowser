@@ -544,7 +544,10 @@
     self.spinner.userInteractionEnabled = NO;
     [self.spinner stopAnimating];
 
-    self.closeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(close)];
+    // <-- techfeed toolbar close button icon
+    // self.closeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(close)];
+    self.closeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(close)];
+    // techfeed -->
     self.closeButton.enabled = YES;
 
     UIBarButtonItem* flexibleSpaceButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -560,6 +563,10 @@
     self.toolbar.autoresizesSubviews = YES;
     self.toolbar.autoresizingMask = toolbarIsAtBottom ? (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin) : UIViewAutoresizingFlexibleWidth;
     self.toolbar.barStyle = UIBarStyleBlackOpaque;
+    // <-- techfeed toolbar background-color
+    self.toolbar.translucent = NO;
+    self.toolbar.barTintColor = [UIColor whiteColor];
+    // techfeed -->
     self.toolbar.clearsContextBeforeDrawing = NO;
     self.toolbar.clipsToBounds = NO;
     self.toolbar.contentMode = UIViewContentModeScaleToFill;
@@ -600,13 +607,25 @@
     self.addressLabel.textColor = [UIColor colorWithWhite:1.000 alpha:1.000];
     self.addressLabel.userInteractionEnabled = NO;
 
-    NSString* frontArrowString = NSLocalizedString(@"►", nil); // create arrow from Unicode char
+    // <-- techfeed front arrow button
+    // NSString* frontArrowString = NSLocalizedString(@"►", nil); // create arrow from Unicode char
+    NSString* frontArrowString = NSLocalizedString(@">", nil); // create arrow from Unicode char
+    // techfeed -->
     self.forwardButton = [[UIBarButtonItem alloc] initWithTitle:frontArrowString style:UIBarButtonItemStylePlain target:self action:@selector(goForward:)];
+    // <-- techfeed front arrow button font size
+    [self.forwardButton setTitleTextAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:30]} forState:UIControlStateNormal];
+    // techfeed -->
     self.forwardButton.enabled = YES;
     self.forwardButton.imageInsets = UIEdgeInsetsZero;
 
-    NSString* backArrowString = NSLocalizedString(@"◄", nil); // create arrow from Unicode char
+    // <-- techfeed back arrow button
+    // NSString* backArrowString = NSLocalizedString(@"◄", nil); // create arrow from Unicode char
+    NSString* backArrowString = NSLocalizedString(@"<", nil); // create arrow from Unicode char
+    // techfeed -->
     self.backButton = [[UIBarButtonItem alloc] initWithTitle:backArrowString style:UIBarButtonItemStylePlain target:self action:@selector(goBack:)];
+    // <-- techfeed back arrow button font size
+    [self.backButton setTitleTextAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:30]} forState:UIControlStateNormal];
+    // techfeed -->
     self.backButton.enabled = YES;
     self.backButton.imageInsets = UIEdgeInsetsZero;
 

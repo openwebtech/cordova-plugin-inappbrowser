@@ -580,11 +580,18 @@ public class InAppBrowser extends CordovaPlugin {
                 // Main container layout
                 LinearLayout main = new LinearLayout(cordova.getActivity());
                 main.setOrientation(LinearLayout.VERTICAL);
+                // <-- techfeed main background-color
+                main.setBackgroundColor(Color.WHITE);
+                // techfeed -->
 
                 // Toolbar layout
                 RelativeLayout toolbar = new RelativeLayout(cordova.getActivity());
+
                 //Please, no more black!
-                toolbar.setBackgroundColor(android.graphics.Color.LTGRAY);
+                // <-- techfeed toolbar background-color
+                // toolbar.setBackgroundColor(android.graphics.Color.LTGRAY);
+                toolbar.setBackgroundColor(Color.WHITE);
+                // techfeed -->
                 toolbar.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, this.dpToPixels(44)));
                 toolbar.setPadding(this.dpToPixels(2), this.dpToPixels(2), this.dpToPixels(2), this.dpToPixels(2));
                 toolbar.setHorizontalGravity(Gravity.LEFT);
@@ -592,14 +599,21 @@ public class InAppBrowser extends CordovaPlugin {
 
                 // Action Button Container layout
                 RelativeLayout actionButtonContainer = new RelativeLayout(cordova.getActivity());
-                actionButtonContainer.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-                actionButtonContainer.setHorizontalGravity(Gravity.LEFT);
+                // <-- techfeed right navigation buttons
+                // actionButtonContainer.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+                // actionButtonContainer.setHorizontalGravity(Gravity.LEFT);
+                actionButtonContainer.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+                actionButtonContainer.setHorizontalGravity(Gravity.RIGHT);
+                // techfeed -->
                 actionButtonContainer.setVerticalGravity(Gravity.CENTER_VERTICAL);
                 actionButtonContainer.setId(Integer.valueOf(1));
 
                 // Back button
                 ImageButton back = new ImageButton(cordova.getActivity());
-                RelativeLayout.LayoutParams backLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+                // <-- techfeed back button size 44px
+                // RelativeLayout.LayoutParams backLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+                RelativeLayout.LayoutParams backLayoutParams = new RelativeLayout.LayoutParams(this.dpToPixels(44), this.dpToPixels(44));
+                // techfeed -->
                 backLayoutParams.addRule(RelativeLayout.ALIGN_LEFT);
                 back.setLayoutParams(backLayoutParams);
                 back.setContentDescription("Back Button");
@@ -625,7 +639,10 @@ public class InAppBrowser extends CordovaPlugin {
 
                 // Forward button
                 ImageButton forward = new ImageButton(cordova.getActivity());
-                RelativeLayout.LayoutParams forwardLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+                // <-- techfeed forward button size 44px
+                // RelativeLayout.LayoutParams forwardLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+                RelativeLayout.LayoutParams forwardLayoutParams = new RelativeLayout.LayoutParams(this.dpToPixels(44), this.dpToPixels(44));
+                // techfeed -->
                 forwardLayoutParams.addRule(RelativeLayout.RIGHT_OF, 2);
                 forward.setLayoutParams(forwardLayoutParams);
                 forward.setContentDescription("Forward Button");
@@ -673,8 +690,11 @@ public class InAppBrowser extends CordovaPlugin {
 
                 // Close/Done button
                 ImageButton close = new ImageButton(cordova.getActivity());
-                RelativeLayout.LayoutParams closeLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+                // <-- techfeed close/done button size 44px
+                // RelativeLayout.LayoutParams closeLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+                RelativeLayout.LayoutParams closeLayoutParams = new RelativeLayout.LayoutParams(this.dpToPixels(44), this.dpToPixels(44));
                 closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                // techfeed -->
                 close.setLayoutParams(closeLayoutParams);
                 forward.setContentDescription("Close Button");
                 close.setId(Integer.valueOf(5));
@@ -696,12 +716,81 @@ public class InAppBrowser extends CordovaPlugin {
                     }
                 });
 
+                // <-- techfeed loading progress bar
+                final ProgressBar bar = new ProgressBar(cordova.getActivity(), null, android.R.attr.progressBarStyleHorizontal);
+                RelativeLayout.LayoutParams barLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, this.dpToPixels(3));
+                bar.setLayoutParams(barLayoutParams);
+                bar.setBackgroundColor(Color.LTGRAY);
+                ClipDrawable pgd = new ClipDrawable(new ColorDrawable(Color.parseColor("#FBC01E")), Gravity.LEFT, ClipDrawable.HORIZONTAL);
+                bar.setProgressDrawable(pgd);
+                bar.setMax(100);
+
+                // delay hide
+                final Handler mHandler = new Handler();
+                final Runnable finishLoading = new Runnable() {
+                    public void run() {
+                        bar.setVisibility(View.INVISIBLE);
+                    }
+                };
+
+                InAppBrowserClient client = new InAppBrowserClient(thatWebView, edittext) {
+                    @Override
+                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                        super.onPageStarted(view, url, favicon);
+                        bar.setProgress(0);
+                        bar.setVisibility(View.VISIBLE);
+                        Log.d(LOG_TAG, "start loading:" + url);
+                    }
+                    @Override
+                    public void onPageFinished(WebView view, String url) {
+                        super.onPageFinished(view, url);
+                        bar.setProgress(100);
+                        mHandler.postDelayed(finishLoading, 1000);
+                        Log.d(LOG_TAG, "finish loading:" + url);
+                    }
+                };
+                InAppChromeClient chromeClient = new InAppChromeClient(thatWebView) {
+                    public void onProgressChanged(WebView view, int progress) {
+                        if (progress > bar.getProgress()) {
+                            bar.setProgress(progress);
+                            Log.d(LOG_TAG, "loading:" + progress);
+                        }
+                    }
+                };
+                // techfeed -->
+
                 // WebView
                 inAppWebView = new WebView(cordova.getActivity());
                 inAppWebView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 inAppWebView.setId(Integer.valueOf(6));
-                inAppWebView.setWebChromeClient(new InAppChromeClient(thatWebView));
-                WebViewClient client = new InAppBrowserClient(thatWebView, edittext);
+                // <-- techfeed progress bar handle
+                // inAppWebView.setWebChromeClient(new InAppChromeClient(thatWebView));
+                // WebViewClient client = new InAppBrowserClient(thatWebView, edittext);
+                inAppWebView.setWebChromeClient(new InAppChromeClient(thatWebView) {
+                    public void onProgressChanged(WebView view, int progress) {
+                        if (progress > bar.getProgress()) {
+                            bar.setProgress(progress);
+                            Log.d(LOG_TAG, "loading:" + progress);
+                        }
+                    }
+                });
+                WebViewClient client = new InAppBrowserClient(thatWebView, edittext) {
+                    @Override
+                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                        super.onPageStarted(view, url, favicon);
+                        bar.setProgress(0);
+                        bar.setVisibility(View.VISIBLE);
+                        Log.d(LOG_TAG, "start loading:" + url);
+                    }
+                    @Override
+                    public void onPageFinished(WebView view, String url) {
+                        super.onPageFinished(view, url);
+                        bar.setProgress(100);
+                        mHandler.postDelayed(finishLoading, 1000);
+                        Log.d(LOG_TAG, "finish loading:" + url);
+                    }
+                };
+                // techfeed -->
                 inAppWebView.setWebViewClient(client);
                 WebSettings settings = inAppWebView.getSettings();
                 settings.setJavaScriptEnabled(true);
@@ -752,7 +841,9 @@ public class InAppBrowser extends CordovaPlugin {
 
                 // Add the views to our toolbar
                 toolbar.addView(actionButtonContainer);
-                toolbar.addView(edittext);
+                // <-- techfeed hidden address bar
+                // toolbar.addView(edittext);
+                // techfeed -->
                 toolbar.addView(close);
 
                 // Don't add the toolbar if its been disabled
@@ -760,6 +851,9 @@ public class InAppBrowser extends CordovaPlugin {
                     // Add our toolbar to our main view/layout
                     main.addView(toolbar);
                 }
+                // <-- techfeed add Progress bar
+                main.addView(bar);
+                // techfeed -->
 
                 // Add our webview to our main view/layout
                 main.addView(inAppWebView);
