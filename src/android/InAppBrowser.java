@@ -68,6 +68,14 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
+// <-- techfeed import
+import android.graphics.Color;
+import android.widget.ProgressBar;
+import android.os.Handler;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.ClipDrawable;
+// techfeed
+
 @SuppressLint("SetJavaScriptEnabled")
 public class InAppBrowser extends CordovaPlugin {
 
@@ -732,31 +740,6 @@ public class InAppBrowser extends CordovaPlugin {
                         bar.setVisibility(View.INVISIBLE);
                     }
                 };
-
-                InAppBrowserClient client = new InAppBrowserClient(thatWebView, edittext) {
-                    @Override
-                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                        super.onPageStarted(view, url, favicon);
-                        bar.setProgress(0);
-                        bar.setVisibility(View.VISIBLE);
-                        Log.d(LOG_TAG, "start loading:" + url);
-                    }
-                    @Override
-                    public void onPageFinished(WebView view, String url) {
-                        super.onPageFinished(view, url);
-                        bar.setProgress(100);
-                        mHandler.postDelayed(finishLoading, 1000);
-                        Log.d(LOG_TAG, "finish loading:" + url);
-                    }
-                };
-                InAppChromeClient chromeClient = new InAppChromeClient(thatWebView) {
-                    public void onProgressChanged(WebView view, int progress) {
-                        if (progress > bar.getProgress()) {
-                            bar.setProgress(progress);
-                            Log.d(LOG_TAG, "loading:" + progress);
-                        }
-                    }
-                };
                 // techfeed -->
 
                 // WebView
@@ -770,7 +753,7 @@ public class InAppBrowser extends CordovaPlugin {
                     public void onProgressChanged(WebView view, int progress) {
                         if (progress > bar.getProgress()) {
                             bar.setProgress(progress);
-                            Log.d(LOG_TAG, "loading:" + progress);
+                            LOG.d(LOG_TAG, "loading:" + progress);
                         }
                     }
                 });
@@ -780,14 +763,14 @@ public class InAppBrowser extends CordovaPlugin {
                         super.onPageStarted(view, url, favicon);
                         bar.setProgress(0);
                         bar.setVisibility(View.VISIBLE);
-                        Log.d(LOG_TAG, "start loading:" + url);
+                        LOG.d(LOG_TAG, "start loading:" + url);
                     }
                     @Override
                     public void onPageFinished(WebView view, String url) {
                         super.onPageFinished(view, url);
                         bar.setProgress(100);
                         mHandler.postDelayed(finishLoading, 1000);
-                        Log.d(LOG_TAG, "finish loading:" + url);
+                        LOG.d(LOG_TAG, "finish loading:" + url);
                     }
                 };
                 // techfeed -->
