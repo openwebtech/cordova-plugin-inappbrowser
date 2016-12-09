@@ -114,6 +114,7 @@ instance, or the system browser.
     - __hardwareback__: set to `yes` to use the hardware back button to navigate backwards through the `InAppBrowser`'s history. If there is no previous page, the `InAppBrowser` will close.  The default value is `yes`, so you must set it to `no` if you want the back button to simply close the InAppBrowser.
     - __mediaPlaybackRequiresUserAction__: Set to `yes` to prevent HTML5 audio or video from autoplaying (defaults to `no`).
     - __shouldPauseOnSuspend__: Set to `yes` to make InAppBrowser WebView to pause/resume with the app to stop background audio (this may be required to avoid Google Play issues like described in [CB-11013](https://issues.apache.org/jira/browse/CB-11013)).
+    - __useWideViewPort__: Sets whether the WebView should enable support for the "viewport" HTML meta tag or should use a wide viewport. When the value of the setting is `no`, the layout width is always set to the width of the WebView control in device-independent (CSS) pixels. When the value is `yes` and the page contains the viewport meta tag, the value of the width specified in the tag is used. If the page does not contain the tag or does not provide a width, then a wide viewport will be used. (defaults to `yes`).
 
     iOS only:
 
@@ -216,12 +217,13 @@ The object returned from a call to `cordova.InAppBrowser.open` when the target i
 - removeEventListener
 - close
 - show
+- hide
 - executeScript
 - insertCSS
 
 ## InAppBrowser.addEventListener
 
-> Adds a listener for an event from the `InAppBrowser`.
+> Adds a listener for an event from the `InAppBrowser`. (Only available when the target is set to `'_blank'`)
 
     ref.addEventListener(eventname, callback);
 
@@ -337,7 +339,7 @@ function executeScriptCallBack(params) {
 
 ## InAppBrowser.removeEventListener
 
-> Removes a listener for an event from the `InAppBrowser`.
+> Removes a listener for an event from the `InAppBrowser`. (Only available when the target is set to `'_blank'`)
 
     ref.removeEventListener(eventname, callback);
 
@@ -414,9 +416,30 @@ The function is passed an `InAppBrowserEvent` object.
     // some time later...
     ref.show();
 
+## InAppBrowser.hide
+
+> Hides the InAppBrowser window. Calling this has no effect if the InAppBrowser was already hidden.
+
+    ref.hide();
+
+- __ref__: reference to the InAppBrowser window (`InAppBrowser`)
+
+### Supported Platforms
+
+- Amazon Fire OS
+- Android
+- iOS
+- Windows 8 and 8.1
+
+### Quick Example
+
+    var ref = cordova.InAppBrowser.open('http://apache.org', '_blank');
+    // some time later...
+    ref.hide();
+
 ## InAppBrowser.executeScript
 
-> Injects JavaScript code into the `InAppBrowser` window
+> Injects JavaScript code into the `InAppBrowser` window. (Only available when the target is set to `'_blank'`)
 
     ref.executeScript(details, callback);
 
@@ -458,7 +481,7 @@ Due to [MSDN docs](https://msdn.microsoft.com/en-us/library/windows.ui.xaml.cont
 
 ## InAppBrowser.insertCSS
 
-> Injects CSS into the `InAppBrowser` window.
+> Injects CSS into the `InAppBrowser` window. (Only available when the target is set to `'_blank'`)
 
     ref.insertCSS(details, callback);
 
