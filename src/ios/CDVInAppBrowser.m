@@ -286,8 +286,12 @@
 
 - (void)openInSystem:(NSURL*)url
 {
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPluginHandleOpenURLNotification object:url]];
-    [[UIApplication sharedApplication] openURL:url];
+    // TechFeed: cordova bug temporary measures => replace "app-prefs:" to "App-Prefs:"
+    NSURL* fixUrl = [NSURL URLWithString:[url.absoluteString
+                                    stringByReplacingOccurrencesOfString:@"^app-prefs:" withString:@"App-Prefs:"
+                                    options:NSRegularExpressionSearch range:NSMakeRange(0, url.absoluteString.length)]];
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPluginHandleOpenURLNotification object:fixUrl]];
+    [[UIApplication sharedApplication] openURL:fixUrl];
 }
 
 // This is a helper method for the inject{Script|Style}{Code|File} API calls, which
