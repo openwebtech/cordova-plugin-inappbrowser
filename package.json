@@ -39,9 +39,18 @@
     "cordova-windows",
     "cordova-firefoxos"
   ],
+  "config": {
+    "demo_www_dir": "demo/platforms/ios/www/",
+    "demo_plugin_dir": "demo/platforms/ios/HelloCordova/Plugins/cordova-plugin-inappbrowser/"
+  },
   "scripts": {
     "test": "npm run jshint",
-    "jshint": "node node_modules/jshint/bin/jshint www && node node_modules/jshint/bin/jshint src && node node_modules/jshint/bin/jshint tests"
+    "jshint": "node node_modules/jshint/bin/jshint www && node node_modules/jshint/bin/jshint src && node node_modules/jshint/bin/jshint tests",
+    "sync:demo-www": "cd $npm_package_config_demo_www_dir && cp -Rf js index.html ../../../www",
+    "sync:plugins": "cp -Rf $npm_package_config_demo_plugin_dir src/ios",
+    "watch:sync": "concurrently \"npm run watch:sync:demo-www\" \"npm run watch:sync:plugins\"",
+    "watch:sync:demo-www": "watch 'npm run sync:demo-www' $npm_package_config_demo_www_dir",
+    "watch:sync:plugins": "watch 'npm run sync:plugins' $npm_package_config_demo_plugin_dir"
   },
   "engines": {
     "cordovaDependencies": {
@@ -56,6 +65,8 @@
   "author": "Apache Software Foundation",
   "license": "Apache-2.0",
   "devDependencies": {
-    "jshint": "^2.6.0"
+    "concurrently": "^4.1.0",
+    "jshint": "^2.6.0",
+    "watch": "^1.0.2"
   }
 }
