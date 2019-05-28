@@ -887,8 +887,20 @@
 
 - (void) rePositionViews {
     if ([_browserOptions.toolbarposition isEqualToString:kInAppBrowserToolbarBarPositionTop]) {
-        [self.webView setFrame:CGRectMake(self.webView.frame.origin.x, TOOLBAR_HEIGHT, self.webView.frame.size.width, self.webView.frame.size.height)];
-        [self.toolbar setFrame:CGRectMake(self.toolbar.frame.origin.x, [self getStatusBarOffset], self.toolbar.frame.size.width, self.toolbar.frame.size.height)];
+        // TechFeed: fix iPhoneX layout
+        // reference https://github.com/toontoet/cordova-plugin-themeablebrowser/commit/138f6d050632ed86f1be98a54f7891983fbc47f2
+        CGFloat statusBarOffset = [self getStatusBarOffset];
+        CGFloat webviewOffset, webviewHeight;
+        if (@available(iOS 11, *)) {
+            webviewOffset = TOOLBAR_HEIGHT + statusBarOffset;
+            webviewHeight = self.webView.frame.size.height - statusBarOffset;
+        } else {
+            webviewOffset = TOOLBAR_HEIGHT;
+            webviewHeight = self.webView.frame.size.height;
+        }
+
+        [self.webView setFrame:CGRectMake(self.webView.frame.origin.x, webviewOffset, self.webView.frame.size.width, webviewHeight)];
+        [self.toolbar setFrame:CGRectMake(self.toolbar.frame.origin.x, statusBarOffset, self.toolbar.frame.size.width, self.toolbar.frame.size.height)];
     }
 }
 
